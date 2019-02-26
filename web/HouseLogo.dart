@@ -1,4 +1,5 @@
 import "dart:math" as Math;
+import "dart:html";
 
 
 class HouseLogo {
@@ -139,6 +140,56 @@ class HouseLogo {
       }
       ret = ret + "<br>";
     }
+    return ret;
+  }
+
+  CanvasElement getDrawnHouse() {
+    CanvasElement ret = new CanvasElement();
+    ret.width = 1000;
+    ret.height = 400;
+
+    CanvasRenderingContext2D ctx = ret.getContext('2d');
+    ctx.fillStyle = color;
+    int size = myHouse.length * 10;
+    int roofHeight = size;
+    int rightRoofCorner = size;
+    int leftRoofCorner = size;
+    for(int i = 0; i < myHouse.length; i++) {
+      for (int j = 0; j < myHouse[i].length; j++) {
+        for (int k = 0; k < myHouse[i][j].length; k++) {
+          if (myHouse[i][j][k]) {
+            if(i == 0) {
+              ctx.fillRect(size - (10 * j),size - ( 10 * k), 9, 9);
+              if (roofHeight >= size - (10 * k)) {
+                roofHeight = size - (10 * k);
+                if (rightRoofCorner > size - (10 * j)) {
+                  rightRoofCorner -= 10 * j;
+                }
+              }
+            } else if (i == 1) {
+              ctx.fillRect(size + (10 * (j + 1)),size - ( 10 * k), 9, 9);
+              if (roofHeight >= size - (10 * k)) {
+                roofHeight = size -  (10 * k);
+                if (leftRoofCorner < size + (10 * (j + 1))) {
+                  leftRoofCorner += 10 * (j + 1);
+                }
+              }
+            } else if (i == 2) {
+              ctx.fillRect(size + (10 * (j + 1)),size + ( 10 * (k + 1)), 9, 9);
+            } else {
+              ctx.fillRect(size - (10 * j),size + ( 10 * (k + 1)), 9, 9);
+            }
+          }
+        }
+      }
+    }
+    ctx.beginPath();
+    ctx.moveTo(rightRoofCorner, roofHeight);
+    ctx.lineTo((rightRoofCorner + leftRoofCorner)/2, roofHeight - 10);
+    ctx.lineTo(leftRoofCorner, roofHeight);
+    //ctx.lineTo(rightRoofCorner, roofHeight);
+    ctx.fill();
+
     return ret;
   }
 }
